@@ -49,16 +49,23 @@ iguales Oeste Oeste = True
 iguales _ _ = False
 
 siguiente :: Dir -> Dir -- en duda
+  -- Precondición: La dirección no es Oeste
 siguiente Norte = Este
 siguiente Este = Sur
 siguiente Sur = Oeste
-siguiente Oeste = Norte
+siguiente Oeste = error "No existe una dirección siguiente de Oeste"
 
 -- Ejercicio 3.2
 data DiaDeSemana = Lunes | Martes | Miercoles | Jueves | Viernes | Sabado | Domingo
 
+primerDiaDeLaSemana :: DiaDeSemana
+primerDiaDeLaSemana = Lunes
+
+ultimoDiaDeLaSemana :: DiaDeSemana
+ultimoDiaDeLaSemana = Domingo
+
 primeroYUltimoDia :: (DiaDeSemana, DiaDeSemana)
-primeroYUltimoDia = (Lunes, Domingo)
+primeroYUltimoDia = (primerDiaDeLaSemana, ultimoDiaDeLaSemana)
 
 empiezaConM :: DiaDeSemana -> Bool
 empiezaConM Martes = True
@@ -66,14 +73,16 @@ empiezaConM Miercoles = True
 empiezaConM _ = False
 
 vieneDespues :: DiaDeSemana -> DiaDeSemana -> Bool -- en duda
-vieneDespues Lunes Domingo  = True
-vieneDespues Martes Lunes = True
-vieneDespues Miercoles Martes  = True
-vieneDespues Jueves Miercoles  = True
-vieneDespues Viernes Jueves  = True
-vieneDespues Sabado Viernes  = True
-vieneDespues Domingo Sabado  = True
-vieneDespues _ _ = False
+vieneDespues d1 d2 = posiciónEnLaSemana d1 > posiciónEnLaSemana d2
+
+posiciónEnLaSemana :: DiaDeSemana -> Int
+posiciónEnLaSemana Lunes = 1
+posiciónEnLaSemana Martes = 2
+posiciónEnLaSemana Miercoles = 3
+posiciónEnLaSemana Jueves = 4
+posiciónEnLaSemana Viernes = 5
+posiciónEnLaSemana Sabado = 6
+posiciónEnLaSemana Domingo = 7
 
 estaEnElMedio :: DiaDeSemana -> Bool -- en duda
 estaEnElMedio Lunes = False
@@ -91,7 +100,7 @@ implica True False = False
 implica _ _ = True
 
 yTambien :: Bool -> Bool -> Bool
-yTambien True True = True
+yTambien True a = a
 yTambien _ _ = False
 
 oBien :: Bool -> Bool -> Bool
@@ -135,32 +144,37 @@ tipo :: Pokemon -> TipoDePokemon
 tipo (Poke t _) = t
 
 superaA :: Pokemon -> Pokemon -> Bool
-superaA p1 p2 = superaA' (tipo p1) (tipo p2)
+superaA p1 p2 = tipoSuperaA (tipo p1) (tipo p2)
 
-superaA' :: TipoDePokemon -> TipoDePokemon -> Bool
-superaA' Agua Fuego = True
-superaA' Fuego Planta = True
-superaA' Planta Agua = True
-superaA' _ _ = False
+tipoSuperaA :: TipoDePokemon -> TipoDePokemon -> Bool
+tipoSuperaA Agua Fuego = True
+tipoSuperaA Fuego Planta = True
+tipoSuperaA Planta Agua = True
+tipoSuperaA _ _ = False
 
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantidadDePokemonDe t (E _ p1 p2) =
-  cantidadDePokemonDe' t p1 + cantidadDePokemonDe' t p2
+  unoSiPokemonEsDeTipoCeroSino t p1 + unoSiPokemonEsDeTipoCeroSino t p2
 
-cantidadDePokemonDe' :: TipoDePokemon -> Pokemon -> Int
-cantidadDePokemonDe' t p = if esDeTipo t p
+unoSiPokemonEsDeTipoCeroSino :: TipoDePokemon -> Pokemon -> Int
+unoSiPokemonEsDeTipoCeroSino t p = if esDeTipo t p
                             then 1
                             else 0
 
 esDeTipo :: TipoDePokemon -> Pokemon -> Bool
-esDeTipo Agua (Poke Agua _) = True
-esDeTipo Fuego (Poke Fuego _) = True
-esDeTipo Planta (Poke Planta _) = True
-esDeTipo _ _ = False
+esDeTipo t p = esMismoTipo t (tipo p)
 
+esMismoTipo :: TipoDePokemon -> TipoDePokemon -> Bool
+esMismoTipo Agua Agua = True
+esMismoTipo Fuego Fuego = True
+esMismoTipo Planta Planta = True
+esMismoTipo _ _ = False
+
+pokemonesDe :: Entrenador -> [Pokemon]
+pokemonesDe (E _ p1 p2) = [p1,p2]
 
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
-juntarPokemon ((E _ p1 p2),(E _ p3 p4)) = [p1, p2, p3, p4]
+juntarPokemon (e1,e2) = pokemonesDe e1 ++ pokemonesDe e2
 
 -- 5 - Funciones polimorficas
 
