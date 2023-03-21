@@ -96,7 +96,7 @@ negar True = False
 negar False = True
 
 implica :: Bool -> Bool -> Bool
-implica True False = False
+implica a False = not a
 implica _ _ = True
 
 yTambien :: Bool -> Bool -> Bool
@@ -105,8 +105,7 @@ yTambien _ _ = False
 
 oBien :: Bool -> Bool -> Bool
 oBien True _ = True
-oBien _ True = True
-oBien _ _ = False
+oBien _ a = a
 
 -- Ejercicio 4.1 - Registros
 
