@@ -153,12 +153,11 @@ tipoSuperaA _ _ = False
 
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantidadDePokemonDe t (E _ p1 p2) =
-  unoSiPokemonEsDeTipoCeroSino t p1 + unoSiPokemonEsDeTipoCeroSino t p2
+  unoSiCeroSino (esDeTipo t p1) + unoSiCeroSino (esDeTipo t p1)
 
-unoSiPokemonEsDeTipoCeroSino :: TipoDePokemon -> Pokemon -> Int
-unoSiPokemonEsDeTipoCeroSino t p = if esDeTipo t p
-                            then 1
-                            else 0
+unoSiCeroSino :: Bool -> Int
+unoSiCeroSino True = 1
+unoSiCeroSino _ = 0 
 
 esDeTipo :: TipoDePokemon -> Pokemon -> Bool
 esDeTipo t p = esMismoTipo t (tipo p)
