@@ -82,8 +82,8 @@ reversa (x:xs) = agregarAlFinal (reversa xs) x
 
 -- 1.14 zipMaximos
 zipMaximos :: [Int] -> [Int] -> [Int]
-zipMaximos [] _ = []
-zipMaximos _ [] = []
+zipMaximos [] ys = ys
+zipMaximos xs [] = xs
 zipMaximos (x: xs) (y: ys) = max x y :zipMaximos xs ys
 
 -- 1.15 elMinimo
