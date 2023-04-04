@@ -206,9 +206,9 @@ listPerLevel (NodeT x t1 t2) =
   [x] : unirTodos (listPerLevel t1) (listPerLevel t2)
 
 unirTodos :: [[a]] -> [[a]] -> [[a]]
-unirTodos [] ys = ys
-unirTodos xs [] = xs
-unirTodos (x:xs) (y:ys) = (x ++ y): unirTodos xs ys 
+unirTodos [] yss = yss
+unirTodos xss [] = xss
+unirTodos (xs:xss) (ys:yss) = (xs ++ ys): unirTodos xss yss
 
 ramaMasLarga :: Tree a -> [a]
 ramaMasLarga EmptyT = []
