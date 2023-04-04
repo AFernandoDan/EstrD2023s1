@@ -22,8 +22,7 @@ sucesores (x:xs) = sucesor x :sucesores xs
 
 -- 1.4 conjuncion
 conjuncion :: [Bool] -> Bool
-conjuncion [] = False
-conjuncion (x:[]) = x
+conjuncion [] = True
 conjuncion (x:xs) = x && conjuncion xs
 
 -- 1.5 disyuncion
@@ -102,7 +101,10 @@ factorial n = n * factorial (n-1)
 -- 2.2 - cuentaRegresiva
 cuentaRegresiva :: Int -> [Int]
 cuentaRegresiva 0 = []
-cuentaRegresiva n = n :cuentaRegresiva (n-1)
+cuentaRegresiva n = 
+  if n < 1
+    then []
+    else n :cuentaRegresiva (n-1)
 
 -- 2.3 repetir
 repetir :: Int -> a -> [a]
@@ -170,6 +172,20 @@ data TipoDePokemon = Agua | Fuego | Planta deriving Show
 data Pokemon = ConsPokemon TipoDePokemon Int deriving Show
 data Entrenador = ConsEntrenador String [Pokemon] deriving Show
 
+-- Pokemones y entrenadores de prueba
+squirtle = ConsPokemon Agua 100
+charmander = ConsPokemon Fuego 100
+bulbasaur = ConsPokemon Planta 100
+lapras = ConsPokemon Agua 100
+charizard = ConsPokemon Fuego 100
+venusaur = ConsPokemon Planta 100
+
+
+ash = ConsEntrenador "Ash" [squirtle, charmander, bulbasaur]
+misty = ConsEntrenador "Misty" [lapras]
+brock = ConsEntrenador "Brock" [charizard, venusaur]
+
+
 -- 3.2.a cantPokemon
 cantPokemon :: Entrenador -> Int
 cantPokemon (ConsEntrenador _ ps) = length ps
@@ -217,29 +233,32 @@ leGanaATodosP p [] = True
 leGanaATodosP p (x:xs) =
   superaA p x && leGanaATodosP p xs
 
-los_QueLesGananATodosLos_ :: [Pokemon] -> [Pokemon] -> [Pokemon]
-los_QueLesGananATodosLos_ [] ys = []
-los_QueLesGananATodosLos_ (x:xs) ys =
+losQueLesGananATodosLos :: [Pokemon] -> [Pokemon] -> [Pokemon]
+losQueLesGananATodosLos [] ys = []
+losQueLesGananATodosLos (x:xs) ys =
   if leGanaATodosP x ys
-    then x: los_QueLesGananATodosLos_ xs ys
-    else los_QueLesGananATodosLos_ xs ys
+    then x: losQueLesGananATodosLos xs ys
+    else losQueLesGananATodosLos xs ys
 
--- losDeTipo_De_QueLeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> [Pokemon]
--- losDeTipo_De_QueLeGananATodosLosDe_ t (ConsEntrenador _ ps1) (ConsEntrenador _ ps2) =
---   los_QueLesGananATodosLos_ (pokemonesDeTipo t (ps1)) ps2
-
-cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
-cuantosDeTipo_De_LeGananATodosLosDe_ t (ConsEntrenador _ ps1) (ConsEntrenador _ ps2) =
-  length (los_QueLesGananATodosLos_ (pokemonesDeTipo t (ps1)) ps2)
+cuantosDeTipoDeLeGananATodosLosDe :: TipoDePokemon -> Entrenador -> Entrenador -> Int
+cuantosDeTipoDeLeGananATodosLosDe t (ConsEntrenador _ ps1) (ConsEntrenador _ ps2) =
+  length (losQueLesGananATodosLos (pokemonesDeTipo t ps1) ps2)
 
 -- 3.2.d esMaestroPokemon
 tieneAlMenosUnPokemonDe :: TipoDePokemon -> Entrenador -> Bool
 tieneAlMenosUnPokemonDe t e = cantPokemonDe t e > 0
 
 esMaestroPokemon :: Entrenador -> Bool
-esMaestroPokemon e = tieneAlMenosUnPokemonDe Agua e &&
-                     tieneAlMenosUnPokemonDe Fuego e &&
-                     tieneAlMenosUnPokemonDe Planta e
+esMaestroPokemon e = hayAlgunoDe Agua (pokemonesE e) &&
+                     hayAlgunoDe Fuego (pokemonesE e) &&
+                     hayAlgunoDe Planta (pokemonesE e)
+
+hayAlgunoDe :: TipoDePokemon -> [Pokemon] -> Bool
+hayAlgunoDe t [] = False
+hayAlgunoDe t (p: ps) = esDeTipo t p || hayAlgunoDe t ps
+
+pokemonesE :: Entrenador -> [Pokemon]
+pokemonesE (ConsEntrenador _ ps) = ps
 
 -- Constantes para probar las funciones
 pokemones :: [Pokemon]
@@ -350,20 +369,17 @@ losQueTrabajanEnAlgun (r: rs) ps =
 
 -- 3.3.d asignadosPorProyecto
 asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
-asignadosPorProyecto e =
-  zip (proyectos e) (cantAsignadosPorProyecto (proyectos e) (roles e))
+asignadosPorProyecto (ConsEmpresa roles) =
+  asignadosPorProyectoR roles
 
-cantAsignadosPorProyecto :: [Proyecto] -> [Rol] -> [Int]
-cantAsignadosPorProyecto [] rs = []
-cantAsignadosPorProyecto (p:ps) rs =
-  (cantQueTrabajanEnP p rs): cantAsignadosPorProyecto ps rs 
+asignadosPorProyectoR :: [Rol] -> [(Proyecto, Int)]
+asignadosPorProyectoR [] = []
+asignadosPorProyectoR (r: rs) =
+  consolidar (proyectoDeRol r) (asignadosPorProyectoR rs)
 
-cantQueTrabajanEnP :: Proyecto -> [Rol] -> Int
-cantQueTrabajanEnP p rs = length (losQueTrabajanEnP p rs)
-
-losQueTrabajanEnP :: Proyecto -> [Rol] -> [Rol]
-losQueTrabajanEnP p [] = []
-losQueTrabajanEnP p (r:rs) =
-  if trabajaEn r p
-    then r: losQueTrabajanEnP p rs
-    else losQueTrabajanEnP p rs
+consolidar :: Proyecto -> [(Proyecto, Int)] -> [(Proyecto, Int)]
+consolidar p [] = [(p, 1)]
+consolidar p (t: ts) =
+  if nombreP p == nombreP (fst t)
+    then (fst t, snd t + 1):ts
+    else t:(consolidar p ts)
