@@ -100,9 +100,8 @@ factorial n = n * factorial (n-1)
 
 -- 2.2 - cuentaRegresiva
 cuentaRegresiva :: Int -> [Int]
-cuentaRegresiva 0 = []
 cuentaRegresiva n = 
-  if n < 0
+  if n < 1
     then []
     else n :cuentaRegresiva (n-1)
 
