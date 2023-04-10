@@ -45,7 +45,7 @@ sacar c1 (Bolita c2 cel) =
 Dado un número n, un color c, y una celda, agrega n bolitas de color c a la celda -}
 ponerN :: Int -> Color -> Celda -> Celda
 ponerN 0 c cel = cel
-ponerN n c cel = ponerN (n-1) c (poner c cel)
+ponerN n c cel = poner c (ponerN (n-1) c cel)
 
 -- 1.2. Camino hacia el tesoro
 data Objeto = Cacharro | Tesoro deriving Show
