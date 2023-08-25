@@ -1,0 +1,12 @@
+Consultar si son correctos los costos hechos en la practica 7 hasta el momento
+
+la operacion: 
+
+buscarPorCUIL :: CUIL -> Empresa -> Empleado
+Propósito: devuelve el empleado con dicho CUIL.
+Costo: O(log E)
+
+¿Tiene como precondicion que Empleado existe en la empresa?, ¿De no ser el caso
+deberia devolver Maybe Empleado en lugar de solo Empleado?.
+
+consultar si las precondiciones son correctas
