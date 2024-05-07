@@ -30,7 +30,7 @@ data Nave = N (Map SectorId Sector) (Map Nombre Tripulante) (MaxHeap Tripulante)
 -- Cada par (IdSector, Sector) en el map de sectores cumple que IdSector = sectorId Sector
 -- Cada par (Nombre, Tripulante) en el map de tripulantes cumple que NombreTripulante = nombre Tripulante
 -- Si un tripulante está en la heap, entonces está en el map de tripulantes
--- Si un sectorid esta en algun tripulante, entonces el sectorid esta en el map de sectores
+-- Si un Sectorid esta en algun tripulante, entonces el sectorid esta en el map de sectores y el tripulante nombre del tripulante está en el sector dado.
 
 -- a) Dar invariantes de representación válidos según la descripción de la estructura.
 
