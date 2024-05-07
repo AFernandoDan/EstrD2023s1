@@ -26,11 +26,12 @@ type Nombre = String
 type Rango = String
 
 data Nave = N (Map SectorId Sector) (Map Nombre Tripulante) (MaxHeap Tripulante)
--- INV.REP:
--- Cada par (IdSector, Sector) en el map de sectores cumple que IdSector = sectorId Sector
--- Cada par (Nombre, Tripulante) en el map de tripulantes cumple que NombreTripulante = nombre Tripulante
--- Si un tripulante está en la heap, entonces está en el map de tripulantes
--- Si un Sectorid esta en algun tripulante, entonces el sectorid esta en el map de sectores y el tripulante nombre del tripulante está en el sector dado.
+-- INV.REP: sea una una nave N mss mnt ht
+-- Cada clave en en mss cumple que el sector asociado a esta tiene el mismo id
+-- Cada clave en en mnt cumple que el tripulante asociado a esta tiene el mismo nombre
+-- Si un tripulante está en la heap, entonces aparece en el map de tripulantes como valor
+-- Si un Sectorid esta en algun tripulante, entonces el sectorid esta en el map de sectores como clave y
+-- el nombre del tripulante está en el sector asociado a la clave sectorId.
 
 -- a) Dar invariantes de representación válidos según la descripción de la estructura.
 
